@@ -291,6 +291,7 @@ class GPFA(sklearn.base.BaseEstimator):
             Alternatively, pass a pre-processed seqs_train array.
             This is a training data structure, whose n-th element
             (corresponding to the n-th experimental trial) has fields
+
             T : int
                 number of bins
             y : (#units, T) np.ndarray
@@ -379,7 +380,7 @@ class GPFA(sklearn.base.BaseEstimator):
 
     def transform(self, spiketrains, seqs=None,
                   returned_data=['latent_variable_orth']):
-        """
+
         Obtain trajectories of neural activity in a low-dimensional latent
         variable space by inferring the posterior mean of the obtained GPFA
         model and applying an orthonormalization on the latent variable space.
@@ -461,6 +462,7 @@ class GPFA(sklearn.base.BaseEstimator):
             if len(spiketrains[0]) != len(self.has_spikes_bool):
                 raise ValueError("'spiketrains' must contain the same number "
                                  "of neurons as the training spiketrain data")
+
             seqs = gpfa_util.get_seqs(spiketrains, self.bin_size)
         elif seqs is not None:
             # check some stuff
