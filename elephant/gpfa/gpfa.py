@@ -380,7 +380,7 @@ class GPFA(sklearn.base.BaseEstimator):
 
     def transform(self, spiketrains, seqs=None,
                   returned_data=['latent_variable_orth']):
-
+        """
         Obtain trajectories of neural activity in a low-dimensional latent
         variable space by inferring the posterior mean of the obtained GPFA
         model and applying an orthonormalization on the latent variable space.
