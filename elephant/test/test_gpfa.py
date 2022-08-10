@@ -239,7 +239,6 @@ class GPFATestCase(unittest.TestCase):
         res = gpfa.params_estimated['d']
         assert_array_almost_equal(res, target, decimal=5)
 
-
     def test_transform_seqs_train(self):
         gpfa = GPFA(x_dim=self.x_dim, em_max_iters=self.n_iters)
         gpfa.fit(None, seqs_train=self.seqs_train)
