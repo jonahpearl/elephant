@@ -86,6 +86,10 @@ class GPFATestCase(unittest.TestCase):
                            for rate in rates]
             self.data2.append(spike_times)
 
+        # generate seqs_train data
+        self.seqs_train = gpfa_util.get_seqs(self.data1,
+                                             bin_size=self.bin_size)
+
     def test_data1(self):
         gpfa = GPFA(x_dim=self.x_dim, em_max_iters=self.n_iters)
         gpfa.fit(self.data1)
@@ -215,6 +219,19 @@ class GPFATestCase(unittest.TestCase):
         logdet_fast = gpfa_util.logdet(matrix)
         logdet_ground_truth = np.log(np.linalg.det(matrix))
         assert_array_almost_equal(logdet_fast, logdet_ground_truth)
+
+    def test_fit_seqs_train(self):
+        gpfa = GPFA(x_dim=self.x_dim, em_max_iters=self.n_iters)
+        gpfa.fit(None, seqs_train=self.seqs_train)
+
+    def test_transform_seqs_train(self):
+        gpfa = GPFA(x_dim=self.x_dim, em_max_iters=self.n_iters)
+        gpfa.fit(None, seqs_train=self.seqs_train)
+        gpfa.transform(None, seqs=self.seqs_train)
+
+    def test_fit_transform_seqs_train(self):
+        gpfa = GPFA(x_dim=self.x_dim, em_max_iters=self.n_iters)
+        gpfa.fit_transform(None, seqs_train=self.seqs_train)
 
 
 if __name__ == "__main__":

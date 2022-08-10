@@ -466,7 +466,10 @@ class GPFA(sklearn.base.BaseEstimator):
             seqs = gpfa_util.get_seqs(spiketrains, self.bin_size)
         elif seqs is not None:
             # check some stuff
-            pass
+            if len(seqs['y'][0]) != len(self.has_spikes_bool):
+                raise ValueError(
+                    "'seq_trains' must contain the same number of neurons as "
+                    "the training spiketrain data")
 
         for seq in seqs:
             seq['y'] = seq['y'][self.has_spikes_bool, :]
@@ -481,7 +484,7 @@ class GPFA(sklearn.base.BaseEstimator):
             return seqs[returned_data[0]]
         return {x: seqs[x] for x in returned_data}
 
-    def fit_transform(self, spiketrains,
+    def fit_transform(self, spiketrains, seqs_train=None,
                       returned_data=['latent_variable_orth']):
         """
         Fit the model with `spiketrains` data and apply the dimensionality
@@ -491,6 +494,10 @@ class GPFA(sklearn.base.BaseEstimator):
         ----------
         spiketrains : list of list of neo.SpikeTrain
             Refer to the :func:`GPFA.fit` docstring.
+
+        seqs_train : np.recarray
+            Refer to the :func:`GPFA.fit` docstring.
+            Default: `None`
 
         returned_data : list of str
             Refer to the :func:`GPFA.transform` docstring.
@@ -503,7 +510,7 @@ class GPFA(sklearn.base.BaseEstimator):
         Raises
         ------
         ValueError
-             Refer to :func:`GPFA.fit` and :func:`GPFA.transform`.
+            Refer to :func:`GPFA.fit` and :func:`GPFA.transform`.
 
         See Also
         --------
@@ -511,8 +518,17 @@ class GPFA(sklearn.base.BaseEstimator):
         GPFA.transform : transform `spiketrains` into trajectories
 
         """
-        self.fit(spiketrains)
-        return self.transform(spiketrains, returned_data=returned_data)
+        if seqs_train is not None and spiketrains is not None:
+            raise ValueError('Cannot provide both spiketrains and seqs_train!')
+        elif spiketrains is not None:
+            self.fit(spiketrains)
+            return self.transform(spiketrains, returned_data=returned_data)
+        elif seqs_train is not None:
+            self.fit(None, seqs_train=seqs_train)
+            return self.transform(None, seqs=seqs_train,
+                                  returned_data=returned_data)
+        else:
+            raise ValueError('Must supply either spiketrains or seqs_train!')
 
     def score(self, spiketrains):
         """
