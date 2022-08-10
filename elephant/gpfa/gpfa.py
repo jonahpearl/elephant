@@ -319,7 +319,6 @@ class GPFA(sklearn.base.BaseEstimator):
             seqs_train = self._format_training_data(spiketrains)
         elif seqs_train is not None:
             seqs_train = self._format_training_data_seqs(seqs_train)
-            # TODO: write this!
         else:
             raise ValueError('Must supply either spiketrains or seqs_train!')
 
